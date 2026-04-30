@@ -1,0 +1,38 @@
+postgres: &postgres
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  username: <%= ENV.fetch("DB_USERNAME") { "postgres" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "trip123Hub" } %>
+
+development:
+  <<: *postgres
+  database: <%= ENV.fetch("DB_NAME") { "triphub_development" } %>
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *postgres
+  database: <%= ENV.fetch("DB_TEST_NAME") { "triphub_test" } %>
+
+# Production uses PostgreSQL with separate databases for app data,
+# Solid Cache, Solid Queue, and Solid Cable.
+production:
+  primary:
+    <<: *postgres
+    database: <%= ENV.fetch("DB_NAME") { "triphub_production" } %>
+  cache:
+    <<: *postgres
+    database: <%= ENV.fetch("DB_CACHE_NAME") { "triphub_production_cache" } %>
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *postgres
+    database: <%= ENV.fetch("DB_QUEUE_NAME") { "triphub_production_queue" } %>
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *postgres
+    database: <%= ENV.fetch("DB_CABLE_NAME") { "triphub_production_cable" } %>
+    migrations_paths: db/cable_migrate
