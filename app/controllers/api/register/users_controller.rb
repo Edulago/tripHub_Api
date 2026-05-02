@@ -1,6 +1,8 @@
 module Api 
     module Register
         class UsersController < ApplicationController
+            before_action :authenticate_request, except: [:create]
+
             def index
                 user = User.all
                 render json: user.as_json(only: [:first_name, :last_name, :birth_date, :cpf, :passport, :email, :active])
@@ -38,7 +40,7 @@ module Api
             private
 
             def user_params
-                params.require(:user).permit(:first_name, :last_name, :birth_date, :cpf, :passport, :email, :password_digest)
+                params.require(:user).permit(:first_name, :last_name, :birth_date, :cpf, :passport, :email, :password, :password_confirmation)
             end
         end
     end
