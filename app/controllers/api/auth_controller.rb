@@ -1,0 +1,18 @@
+module Api
+  class AuthController < ApplicationController
+    def login
+      user = User.find_by(email: params[:email], active: true)
+
+      if user&.authenticate(params[:password])
+        token = ::JsonWebToken.encode(user_id: user.id)
+
+        render json: {
+          token: token,
+          user: user.as_json(only: [:first_name, :last_name, :birth_date, :cpf, :passport, :email, :active])
+        }, status: :ok
+      else
+        render json: { error: "Invalid email or password" }, status: :unauthorized
+      end
+    end
+  end
+end
